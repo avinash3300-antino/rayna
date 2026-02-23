@@ -20,10 +20,11 @@ export const config = {
 
   llm: {
     // Easily switch LLM provider here
-    provider: optional("LLM_PROVIDER", "claude") as "claude" | "openai" | "gemini",
+    provider: optional("LLM_PROVIDER", "grok") as "claude" | "openai" | "gemini" | "grok",
     anthropicApiKey: optional("ANTHROPIC_API_KEY", ""),
     openaiApiKey: optional("OPENAI_API_KEY", ""),
     geminiApiKey: optional("GEMINI_API_KEY", ""),
+    grokApiKey: optional("GROK_API_KEY", ""),
   },
 
   rayna: {
