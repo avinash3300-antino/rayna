@@ -46,7 +46,8 @@ export class RaynaApiService {
   async execute(toolName: ToolName, input: Record<string, unknown>): Promise<string> {
     try {
       const data = await this.callApi(toolName, input);
-      return JSON.stringify({ success: true, data });
+      const trimmed = this.trimResponse(data);
+      return JSON.stringify({ success: true, data: trimmed });
     } catch (err) {
       const error = err as AxiosError;
       console.error(`[RaynaApiService] Tool "${toolName}" failed:`, error.message);
@@ -57,6 +58,44 @@ export class RaynaApiService {
         hint: "API call failed. Tell user data is temporarily unavailable.",
       });
     }
+  }
+
+  // Trim large API responses to stay within LLM token/size limits
+  private trimResponse(data: unknown): unknown {
+    if (!data || typeof data !== "object") return data;
+
+    const obj = data as Record<string, unknown>;
+
+    // If response has an array of products/items, limit to top 10
+    for (const key of Object.keys(obj)) {
+      if (Array.isArray(obj[key]) && (obj[key] as unknown[]).length > 10) {
+        const arr = obj[key] as unknown[];
+        obj[key] = arr.slice(0, 10);
+        (obj as any)[`${key}_note`] = `Showing 10 of ${arr.length} results. Ask user to narrow down if needed.`;
+      }
+    }
+
+    // If it's an array at the top level
+    if (Array.isArray(data) && data.length > 10) {
+      return {
+        items: data.slice(0, 10),
+        total: data.length,
+        note: "Showing 10 of " + data.length + " results.",
+      };
+    }
+
+    // Final safety: cap the JSON string size to ~8KB
+    const json = JSON.stringify(obj);
+    if (json.length > 8000) {
+      // Try to find arrays and shrink them further
+      for (const key of Object.keys(obj)) {
+        if (Array.isArray(obj[key]) && (obj[key] as unknown[]).length > 5) {
+          obj[key] = (obj[key] as unknown[]).slice(0, 5);
+        }
+      }
+    }
+
+    return obj;
   }
 
   private async callApi(toolName: ToolName, input: Record<string, unknown>): Promise<unknown> {

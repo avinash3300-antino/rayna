@@ -168,7 +168,7 @@ export class GrokProvider extends LLMProvider {
       response = await axios.post(
         `${this.baseUrl}/chat/completions`,
         {
-          model: "llama-3.3-70b-versatile",
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
           messages: openaiMessages,
           tools: openaiTools,
           tool_choice: "auto",
