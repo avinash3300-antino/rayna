@@ -106,7 +106,7 @@ export default function MessageBubble({ message, animate = false }: MessageBubbl
       >
         <p
           className={`whitespace-pre-wrap text-sm leading-relaxed wrap-break-word ${
-            !isUser ? "text-gray-200" : ""
+            !isUser ? "text-black" : ""
           } ${animate && !isUser && !isDone ? "cursor-blink" : ""}`}
         >
           {renderContent(content)}

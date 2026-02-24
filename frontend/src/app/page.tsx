@@ -4,8 +4,8 @@ import ChatPanel from "@/components/layout/ChatPanel";
 
 export default function Home() {
   return (
-    <main className="flex h-screen overflow-hidden bg-[#0a0a0f]">
-      <div className="w-full">
+    <main className="flex justify-center h-screen overflow-hidden bg-[#ffff]">
+      <div className="w-[60%]">
         <ChatPanel />
       </div>
     </main>

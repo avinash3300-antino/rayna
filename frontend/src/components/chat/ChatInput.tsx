@@ -41,7 +41,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <div className="p-4 md:px-6 border-t border-white/5">
+    <div className="p-5 md:px-6 border-t border-white/5">
       <div className="flex items-end gap-3 max-w-3xl mx-auto">
         <div className="flex-1 glass rounded-xl focus-within:border-amber-500/40 focus-within:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all">
           <textarea
@@ -52,7 +52,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
             placeholder="Ask about tours, activities, cruises..."
             disabled={disabled}
             rows={1}
-            className="w-full resize-none bg-transparent p-3.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none disabled:opacity-40"
+            className="w-full resize-none bg-transparent p-4 text-sm text-black placeholder-gray-500 focus:outline-none disabled:opacity-40 border-[1px] border-gray-600 rounded-3xl"
           />
         </div>
         <button

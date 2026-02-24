@@ -22,15 +22,18 @@ export default function ChatPanel() {
   }, [messages.length, isLoading, messages]);
 
   return (
-    <div className="flex flex-col h-full w-full bg-(--bg-primary)">
+    <div className="flex flex-col h-full w-full  ">
+
+   
       {/* Header */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3.5 border-b border-white/5 bg-(--bg-secondary)">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3.5 border-b border-white/5 ">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-linear-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-            <span className="text-white text-sm font-bold">R</span>
+          <div className="w-28 rounded-xl  flex items-center justify-center ">
+            
+            <img src="/raynatourslogo.webp" alt="Rayna Tours Logo" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-gray-100">
+            <h2 className="text-sm font-semibold text-black">
               Rayna AI
             </h2>
             <div className="flex items-center gap-1.5">
@@ -61,6 +64,8 @@ export default function ChatPanel() {
 
       {/* Input */}
       <ChatInput onSend={sendMessage} disabled={isLoading} />
+
+      
     </div>
   );
 }

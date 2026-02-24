@@ -17,14 +17,14 @@ export default function QuickPrompts({ onSelect }: QuickPromptsProps) {
   return (
     <div className="flex flex-col items-center justify-center h-full p-6">
       {/* Logo */}
-      <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-5 shadow-lg shadow-amber-500/25">
-        <span className="text-white text-2xl font-bold">R</span>
+      <div className="w-28  rounded-2xl  flex items-center justify-center mb-5 ">
+        <img src="/raynatourslogo.webp" alt="Rayna Tours Logo" />
       </div>
 
-      <h3 className="text-xl font-semibold text-gray-100 mb-1">
+      {/* <h3 className="text-xl font-semibold text-black mb-1">
         Hi! I&apos;m Rayna
-      </h3>
-      <p className="text-sm text-gray-500 mb-8 text-center max-w-sm">
+      </h3> */}
+      <p className="text-sm text-black mb-8 text-center max-w-sm">
         Your AI travel assistant. Ask me about tours, activities, and holiday packages!
       </p>
 
@@ -33,7 +33,7 @@ export default function QuickPrompts({ onSelect }: QuickPromptsProps) {
           <button
             key={prompt.text}
             onClick={() => onSelect(prompt.text)}
-            className="flex items-center gap-3 text-left text-sm px-4 py-3.5 rounded-xl glass glass-hover transition-all text-gray-300 hover:text-amber-300 group"
+            className="flex items-center gap-3 text-left text-sm px-4 py-3.5 rounded-xl glass glass-hover border-2 transition-all text-black  hover:text-amber-300 group"
           >
             <span className="text-lg group-hover:scale-110 transition-transform">
               {prompt.icon}
