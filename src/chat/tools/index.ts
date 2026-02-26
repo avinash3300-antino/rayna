@@ -5,6 +5,8 @@ import { getCityHolidayTool } from "./get-city-holiday.tool";
 import { getCityCruiseTool } from "./get-city-cruise.tool";
 import { getCityYachtTool } from "./get-city-yacht.tool";
 import { getProductDetailsTool } from "./get-product-details.tool";
+import { getVisasTool } from "./get-visas.tool";
+import { getPopularVisasTool } from "./get-popular-visas.tool";
 
 // ─────────────────────────────────────────────────────────
 // ALL_TOOLS — Claude sees this list and decides what to call
@@ -14,7 +16,7 @@ import { getProductDetailsTool } from "./get-product-details.tool";
 // MILESTONE 3: Booking tools  → add here when ready
 // ─────────────────────────────────────────────────────────
 export const ALL_TOOLS = [
-  // Milestone 1 — Tour Discovery
+  // Milestone 1 — Tour Discovery & Travel Services
   getAvailableCitiesTool,
   getAllProductsTool,
   getCityProductsTool,
@@ -22,6 +24,10 @@ export const ALL_TOOLS = [
   getCityCruiseTool,
   getCityYachtTool,
   getProductDetailsTool,
+  
+  // Visa Services
+  getVisasTool,
+  getPopularVisasTool,
 
   // Milestone 2 — Profile Management (coming soon)
   // getUserProfileTool,
@@ -40,7 +46,9 @@ export type ToolName =
   | "get_city_holiday_packages"
   | "get_city_cruises"
   | "get_city_yachts"
-  | "get_product_details";
+  | "get_product_details"
+  | "get_visas"
+  | "get_popular_visas";
   // | "get_user_profile"        // M2
   // | "update_user_profile"     // M2
   // | "get_user_bookings"       // M3

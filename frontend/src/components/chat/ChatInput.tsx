@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { MAX_MESSAGE_LENGTH } from "@/lib/constants";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -11,16 +12,32 @@ interface ChatInputProps {
 export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Speech-to-text functionality
+  const {
+    transcript,
+    isListening,
+    isSupported: isSpeechSupported,
+    startListening,
+    stopListening,
+    clearTranscript,
+    error: speechError
+  } = useSpeechToText({
+    continuous: false,
+    interimResults: true,
+    language: 'en-US'
+  });
 
-  const handleSend = useCallback(() => {
+    const handleSend = useCallback(() => {
     const trimmed = input.trim();
     if (!trimmed || disabled) return;
     onSend(trimmed);
     setInput("");
+    clearTranscript();
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
-  }, [input, disabled, onSend]);
+  }, [input, disabled, onSend, clearTranscript]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -29,7 +46,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value.slice(0, MAX_MESSAGE_LENGTH);
     setInput(value);
 
@@ -40,20 +57,79 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
     }
   };
 
+  // Update input when speech transcript changes
+  useEffect(() => {
+    if (transcript) {
+      setInput(transcript);
+      const el = textareaRef.current;
+      if (el) {
+        el.style.height = "auto";
+        el.style.height = Math.min(el.scrollHeight, 120) + "px";
+      }
+    }
+  }, [transcript]);
+
+  const handleMicClick = useCallback(() => {
+    if (isListening) {
+      stopListening();
+    } else {
+      clearTranscript();
+      setInput(""); // Clear current input
+      startListening();
+    }
+  }, [isListening, startListening, stopListening, clearTranscript]);
+
   return (
     <div className="p-5 md:px-6 border-t border-white/5">
       <div className="flex items-end gap-3 max-w-3xl mx-auto">
-        <div className="flex-1 glass rounded-xl focus-within:border-amber-500/40 focus-within:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask about tours, activities, cruises..."
-            disabled={disabled}
-            rows={1}
-            className="w-full resize-none bg-transparent p-4 text-sm text-black placeholder-gray-500 focus:outline-none disabled:opacity-40 border-[1px] border-gray-600 rounded-3xl"
-          />
+                <div className="flex-1 glass rounded-xl focus-within:border-amber-500/40 focus-within:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all relative">
+          <div className="flex items-center">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              placeholder={isListening ? "Listening... speak now" : "Ask about tours, activities, cruises..."}
+              disabled={disabled || isListening}
+              rows={1}
+              className="w-full resize-none bg-transparent p-4 pr-12 text-sm text-black placeholder-gray-500 focus:outline-none disabled:opacity-40 border-[1px] border-gray-600 rounded-3xl"
+            />
+            {/* Microphone button */}
+            {isSpeechSupported && (
+              <button
+                type="button"
+                onClick={handleMicClick}
+                disabled={disabled}
+                className={`absolute right-3 p-2 rounded-full transition-all ${
+                  isListening
+                    ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                } disabled:opacity-40`}
+                aria-label={isListening ? "Stop listening" : "Start voice input"}
+                title={isListening ? "Stop listening" : "Click to speak"}
+              >
+                                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
         <button
           onClick={handleSend}
@@ -77,11 +153,24 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
           </svg>
         </button>
       </div>
-      {input.length > 900 && (
-        <p className="text-xs text-black mt-1.5 text-right max-w-3xl mx-auto">
-          {input.length}/{MAX_MESSAGE_LENGTH}
-        </p>
-      )}
+            {/* Status messages */}
+      <div className="max-w-3xl mx-auto mt-2">
+        {speechError && (
+          <p className="text-xs text-red-500 text-center">
+            Speech error: {speechError}
+          </p>
+        )}
+        {isListening && (
+          <p className="text-xs text-blue-500 text-center animate-pulse">
+            🎤 Listening... Click the microphone again to stop
+          </p>
+        )}
+        {input.length > 900 && (
+          <p className="text-xs text-black text-right">
+            {input.length}/{MAX_MESSAGE_LENGTH}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

@@ -4,8 +4,8 @@ import type { Message } from "@/lib/types";
 import { useTypewriter } from "@/hooks/useTypewriter";
 
 function formatInline(text: string, keyPrefix: string) {
-  // Handle **bold**, *italic*, URLs
-  const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|(https?:\/\/[^\s]+))/g;
+  // Handle **bold**, *italic*, URLs (with and without parentheses)
+  const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|\(?https?:\/\/[^\s)]+\)?)/g;
   const result: React.ReactNode[] = [];
   let lastIndex = 0;
   let match;
@@ -32,17 +32,31 @@ function formatInline(text: string, keyPrefix: string) {
       result.push(
         <em key={`${keyPrefix}-i${match.index}`}>{match[3]}</em>
       );
-    } else if (match[4]) {
-      // URL
+    } else {
+      // URL - clean up parentheses if present
+      let url = match[0];
+      let displayUrl = url;
+      
+      // Remove wrapping parentheses if present
+      if (url.startsWith('(') && url.endsWith(')')) {
+        url = url.slice(1, -1);
+        displayUrl = url;
+      }
+      
+      // Ensure URL starts with http/https
+      if (!url.startsWith('http')) {
+        url = 'https://' + url;
+      }
+      
       result.push(
         <a
           key={`${keyPrefix}-u${match.index}`}
-          href={match[4]}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-amber-400 underline underline-offset-2 hover:text-amber-300 transition-colors"
+          className="text-amber-400 underline underline-offset-2 hover:text-amber-300 transition-colors break-all"
         >
-          {match[4]}
+          {displayUrl}
         </a>
       );
     }

@@ -94,3 +94,34 @@ body {
   box-shadow: 0 0 20px rgba(245, 158, 11, 0.15),
               0 0 40px rgba(245, 158, 11, 0.05);
 }
+
+/* Chat scrolling improvements */
+.chat-container {
+  scroll-behavior: smooth;
+  overflow-anchor: auto;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.3);
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.5);
+}
+
+/* Ensure text doesn't break awkwardly */
+.wrap-break-word {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

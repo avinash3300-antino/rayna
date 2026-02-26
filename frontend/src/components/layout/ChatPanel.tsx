@@ -9,7 +9,15 @@ import NewChatButton from "@/components/chat/NewChatButton";
 import QuickPrompts from "@/components/ui/QuickPrompts";
 
 export default function ChatPanel() {
-  const { messages, isLoading, error, sendMessage, clearChat } = useChat();
+  const { 
+    messages, 
+    isLoading, 
+    error, 
+    sendMessage, 
+    clearChat, 
+    shouldScrollToBottom, 
+    consumeScrollTrigger 
+  } = useChat();
   const [animatingIndex, setAnimatingIndex] = useState<number | null>(null);
 
   // When a new assistant message arrives, trigger typewriter on it
@@ -45,14 +53,27 @@ export default function ChatPanel() {
         <NewChatButton onClear={clearChat} disabled={isLoading} />
       </div>
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+                  {/* Messages area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {messages.length === 0 ? (
-          <QuickPrompts onSelect={sendMessage} />
+          <div className="flex-1 overflow-y-auto">
+            <QuickPrompts onSelect={sendMessage} />
+          </div>
         ) : (
-          <MessageList messages={messages} animatingIndex={animatingIndex} />
+          <div className="flex-1 flex flex-col min-h-0">
+            <MessageList 
+              messages={messages} 
+              animatingIndex={animatingIndex} 
+              shouldScrollToBottom={shouldScrollToBottom}
+              onScrollTriggered={consumeScrollTrigger}
+            />
+            {isLoading && (
+              <div className="px-4 md:px-6 py-2">
+                <TypingIndicator />
+              </div>
+            )}
+          </div>
         )}
-        {isLoading && <TypingIndicator />}
       </div>
 
       {/* Error bar */}

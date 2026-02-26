@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
 import { config } from "../config";
 import type { ToolName } from "./tools";
+import { visaService } from "./visa.service";
 
 // ─────────────────────────────────────────────────────────
 // RaynaApiService
@@ -153,12 +154,35 @@ export class RaynaApiService {
         return data;
       }
 
-      // ── GET /api/product-details?url=<encoded-url> ──
+            // ── GET /api/product-details?url=<encoded-url> ──
       case "get_product_details": {
         const { data } = await this.client.get("/product-details", {
           params: { url: input.url },
         });
         return data;
+      }
+
+      // ── VISA SERVICES ──
+      case "get_visas": {
+        const result = await visaService.getVisas({
+          country: input.country as string,
+          limit: input.limit as number,
+        });
+        return {
+          success: true,
+          message: `Found ${result.length} visa(s)`,
+          data: result,
+        };
+      }
+
+      case "get_popular_visas": {
+        const result = await visaService.getPopularVisas();
+        const limited = result.slice(0, (input.limit as number) || 8);
+        return {
+          success: true,
+          message: `Found ${limited.length} popular visa destinations`,
+          data: limited,
+        };
       }
 
       // ── Milestone 2 (not active yet) ──
