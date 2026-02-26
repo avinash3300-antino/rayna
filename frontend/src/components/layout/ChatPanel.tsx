@@ -38,7 +38,7 @@ export default function ChatPanel() {
             </h2>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
-              <p className="text-xs text-gray-500">Online</p>
+              <p className="text-xs text-black">Online</p>
             </div>
           </div>
         </div>

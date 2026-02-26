@@ -78,7 +78,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         </button>
       </div>
       {input.length > 900 && (
-        <p className="text-xs text-gray-500 mt-1.5 text-right max-w-3xl mx-auto">
+        <p className="text-xs text-black mt-1.5 text-right max-w-3xl mx-auto">
           {input.length}/{MAX_MESSAGE_LENGTH}
         </p>
       )}

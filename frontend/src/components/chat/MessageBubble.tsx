@@ -23,7 +23,7 @@ function formatInline(text: string, keyPrefix: string) {
     if (match[2]) {
       // **bold**
       result.push(
-        <strong key={`${keyPrefix}-b${match.index}`} className="font-semibold text-gray-100">
+        <strong key={`${keyPrefix}-b${match.index}`} className="font-semibold text-black">
           {match[2]}
         </strong>
       );
