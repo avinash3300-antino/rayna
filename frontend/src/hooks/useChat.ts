@@ -46,9 +46,10 @@ export function useChat() {
       setSessionId(response.session_id);
 
             // Add assistant response
-      const assistantMsg: Message = {
+            const assistantMsg: Message = {
         role: "assistant",
         content: response.message,
+        tourCarousel: response.tourCarousel,
       };
       setMessages((prev) => [...prev, assistantMsg]);
       setShouldScrollToBottom(true);

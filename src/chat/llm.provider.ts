@@ -1,5 +1,7 @@
 import { config } from "../config";
 import axios from "axios";
+import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 
 export interface LLMMessage {
   role: "user" | "assistant";
@@ -90,7 +92,247 @@ export class ClaudeProvider extends LLMProvider {
 }
 
 // ─────────────────────────────────────────────────────────
-// Groq Provider (OpenAI-compatible API)
+// OpenAI Provider
+// ─────────────────────────────────────────────────────────
+export class OpenAIProvider extends LLMProvider {
+  private client: OpenAI;
+
+  constructor() {
+    super();
+    this.client = new OpenAI({ apiKey: config.llm.openaiApiKey });
+  }
+
+  private convertTools(tools: unknown[]): any[] {
+    return (tools as any[]).map((t) => ({
+      type: "function",
+      function: {
+        name: t.name,
+        description: t.description,
+        parameters: t.input_schema,
+      },
+    }));
+  }
+
+  private convertMessages(messages: LLMMessage[], systemPrompt: string): any[] {
+    const converted: any[] = [{ role: "system", content: systemPrompt }];
+
+    for (const msg of messages) {
+      if (msg.role === "user" && Array.isArray(msg.content)) {
+        const toolResults = msg.content as any[];
+        for (const r of toolResults) {
+          if (r.type === "tool_result") {
+            converted.push({
+              role: "tool",
+              tool_call_id: r.tool_use_id,
+              content: r.content,
+            });
+          }
+        }
+      } else if (msg.role === "assistant" && Array.isArray(msg.content)) {
+        const blocks = msg.content as any[];
+        const textParts = blocks.filter((b) => b.type === "text").map((b) => b.text);
+        const toolCalls = blocks.filter((b) => b.type === "tool_use").map((b) => ({
+          id: b.id,
+          type: "function",
+          function: { name: b.name, arguments: JSON.stringify(b.input) },
+        }));
+
+        const assistantMsg: any = { role: "assistant", content: textParts.join("") || null };
+        if (toolCalls.length > 0) {
+          assistantMsg.tool_calls = toolCalls;
+        }
+        converted.push(assistantMsg);
+      } else {
+        converted.push({ role: msg.role, content: msg.content });
+      }
+    }
+
+    return converted;
+  }
+
+  async chat(messages: LLMMessage[], systemPrompt: string, tools: unknown[]): Promise<LLMResponse> {
+    const openaiMessages = this.convertMessages(messages, systemPrompt);
+    const openaiTools = this.convertTools(tools);
+
+    const response = await this.client.chat.completions.create({
+      model: "gpt-4-turbo-preview",
+      messages: openaiMessages,
+      tools: openaiTools as any,
+      tool_choice: "auto",
+      max_tokens: 2048,
+    });
+
+    const choice = response.choices[0];
+    const message = choice.message;
+
+    const rawContent: unknown[] = [];
+    if (message.content) {
+      rawContent.push({ type: "text", text: message.content });
+    }
+    if (message.tool_calls) {
+      for (const tc of message.tool_calls) {
+        rawContent.push({
+          type: "tool_use",
+          id: tc.id,
+                    name: (tc as any).function.name,
+          input: JSON.parse((tc as any).function.arguments),
+        });
+      }
+    }
+
+    const stopReason = message.tool_calls ? "tool_use" : "end_turn";
+
+    return {
+      text: message.content ?? "",
+      rawContent,
+      stopReason,
+    };
+  }
+
+  isToolUse(response: LLMResponse): boolean {
+    return response.stopReason === "tool_use";
+  }
+
+  extractToolCalls(response: LLMResponse) {
+    return (response.rawContent as any[])
+      .filter((b) => b.type === "tool_use")
+      .map((b) => ({ id: b.id, name: b.name, input: b.input }));
+  }
+
+  buildToolResultMessage(toolResults: Array<{ id: string; content: string }>): LLMMessage {
+    return {
+      role: "user",
+      content: toolResults.map((r) => ({
+        type: "tool_result",
+        tool_use_id: r.id,
+        content: r.content,
+      })),
+    };
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// Groq Provider
+// ─────────────────────────────────────────────────────────
+export class GroqProvider extends LLMProvider {
+  private client: Groq;
+
+  constructor() {
+    super();
+    this.client = new Groq({ apiKey: config.llm.groqApiKey });
+  }
+
+  private convertTools(tools: unknown[]): any[] {
+    return (tools as any[]).map((t) => ({
+      type: "function",
+      function: {
+        name: t.name,
+        description: t.description,
+        parameters: t.input_schema,
+      },
+    }));
+  }
+
+  private convertMessages(messages: LLMMessage[], systemPrompt: string): any[] {
+    const converted: any[] = [{ role: "system", content: systemPrompt }];
+
+    for (const msg of messages) {
+      if (msg.role === "user" && Array.isArray(msg.content)) {
+        const toolResults = msg.content as any[];
+        for (const r of toolResults) {
+          if (r.type === "tool_result") {
+            converted.push({
+              role: "tool",
+              tool_call_id: r.tool_use_id,
+              content: r.content,
+            });
+          }
+        }
+      } else if (msg.role === "assistant" && Array.isArray(msg.content)) {
+        const blocks = msg.content as any[];
+        const textParts = blocks.filter((b) => b.type === "text").map((b) => b.text);
+        const toolCalls = blocks.filter((b) => b.type === "tool_use").map((b) => ({
+          id: b.id,
+          type: "function",
+          function: { name: b.name, arguments: JSON.stringify(b.input) },
+        }));
+
+        const assistantMsg: any = { role: "assistant", content: textParts.join("") || null };
+        if (toolCalls.length > 0) {
+          assistantMsg.tool_calls = toolCalls;
+        }
+        converted.push(assistantMsg);
+      } else {
+        converted.push({ role: msg.role, content: msg.content });
+      }
+    }
+
+    return converted;
+  }
+
+  async chat(messages: LLMMessage[], systemPrompt: string, tools: unknown[]): Promise<LLMResponse> {
+    const groqMessages = this.convertMessages(messages, systemPrompt);
+    const groqTools = this.convertTools(tools);
+
+    const response = await this.client.chat.completions.create({
+      model: "llama-3.1-70b-versatile",
+      messages: groqMessages,
+      tools: groqTools,
+      tool_choice: "auto",
+      max_tokens: 2048,
+    });
+
+    const choice = response.choices[0];
+    const message = choice.message;
+
+    const rawContent: unknown[] = [];
+    if (message.content) {
+      rawContent.push({ type: "text", text: message.content });
+    }
+    if (message.tool_calls) {
+      for (const tc of message.tool_calls) {
+        rawContent.push({
+          type: "tool_use",
+          id: tc.id,
+                    name: (tc as any).function.name,
+          input: JSON.parse((tc as any).function.arguments),
+        });
+      }
+    }
+
+    const stopReason = message.tool_calls ? "tool_use" : "end_turn";
+
+    return {
+      text: message.content ?? "",
+      rawContent,
+      stopReason,
+    };
+  }
+
+  isToolUse(response: LLMResponse): boolean {
+    return response.stopReason === "tool_use";
+  }
+
+  extractToolCalls(response: LLMResponse) {
+    return (response.rawContent as any[])
+      .filter((b) => b.type === "tool_use")
+      .map((b) => ({ id: b.id, name: b.name, input: b.input }));
+  }
+
+  buildToolResultMessage(toolResults: Array<{ id: string; content: string }>): LLMMessage {
+    return {
+      role: "user",
+      content: toolResults.map((r) => ({
+        type: "tool_result",
+        tool_use_id: r.id,
+        content: r.content,
+      })),
+    };
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// Grok Provider (xAI's API)
 // ─────────────────────────────────────────────────────────
 export class GrokProvider extends LLMProvider {
   private apiKey: string;
@@ -170,7 +412,7 @@ export class GrokProvider extends LLMProvider {
         {
           model: "meta-llama/llama-4-scout-17b-16e-instruct",
           messages: openaiMessages,
-          tools: openaiTools,
+          tools: openaiTools as any,
           tool_choice: "auto",
           max_completion_tokens: 2048,
           parallel_tool_calls: false,
@@ -202,8 +444,8 @@ export class GrokProvider extends LLMProvider {
         rawContent.push({
           type: "tool_use",
           id: tc.id,
-          name: tc.function.name,
-          input: JSON.parse(tc.function.arguments),
+                    name: (tc as any).function.name,
+          input: JSON.parse((tc as any).function.arguments),
         });
       }
     }
@@ -246,10 +488,14 @@ export function createLLMProvider(): LLMProvider {
   switch (config.llm.provider) {
     case "claude":
       return new ClaudeProvider();
+    case "openai":
+      return new OpenAIProvider();
+    case "groq":
+      return new GroqProvider();
     case "grok":
       return new GrokProvider();
     default:
-      console.warn(`[LLMProvider] Unknown provider "${config.llm.provider}", defaulting to Grok`);
-      return new GrokProvider();
+      console.warn(`[LLMProvider] Unknown provider "${config.llm.provider}", defaulting to Claude`);
+      return new ClaudeProvider();
   }
 }

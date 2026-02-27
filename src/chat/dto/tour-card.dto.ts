@@ -28,37 +28,8 @@ export interface TourCarousel {
   totalResults?: number;
 }
 
-export interface Message {
-  role: "user" | "assistant";
-  content: string;
-  tourCarousel?: TourCarousel;
-}
-
-export interface ChatResponse {
+export interface ChatResponseWithCards {
   message: string;
-  session_id: string;
   tourCarousel?: TourCarousel;
-  metadata?: {
-    hasCards: boolean;
-    cardCount?: number;
-    totalResults?: number;
-  };
+  sessionId: string;
 }
-
-export interface HistoryResponse {
-  session_id: string;
-  messages: Message[];
-}
-
-export interface ErrorResponse {
-  error: string;
-  details?: string;
-}
-
-export interface HealthResponse {
-  status: string;
-  service: string;
-  milestone: number;
-  timestamp: string;
-}
-

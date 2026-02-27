@@ -18,13 +18,14 @@ export const config = {
     corsOrigin: optional("CORS_ORIGIN", "http://localhost:3000"),
   },
 
-  llm: {
+    llm: {
     // Easily switch LLM provider here
-    provider: optional("LLM_PROVIDER", "grok") as "claude" | "openai" | "gemini" | "grok",
+    provider: optional("LLM_PROVIDER", "claude") as "claude" | "openai" | "gemini" | "grok" | "groq",
     anthropicApiKey: optional("ANTHROPIC_API_KEY", ""),
     openaiApiKey: optional("OPENAI_API_KEY", ""),
     geminiApiKey: optional("GEMINI_API_KEY", ""),
     grokApiKey: optional("GROK_API_KEY", ""),
+    groqApiKey: optional("GROQ_API_KEY", ""),
   },
 
   rayna: {
@@ -38,8 +39,21 @@ export const config = {
     ttlMinutes: parseInt(optional("SESSION_TTL_MINUTES", "30")),
   },
 
-  rateLimit: {
+    rateLimit: {
     windowMs: parseInt(optional("RATE_LIMIT_WINDOW_MS", "60000")),
     maxRequests: parseInt(optional("RATE_LIMIT_MAX_REQUESTS", "20")),
+  },
+
+  // RAG Configuration
+  rag: {
+    enabled: optional("RAG_ENABLED", "true") === "true",
+    pineconeApiKey: optional("PINECONE_API_KEY", ""),
+    pineconeEnvironment: optional("PINECONE_ENVIRONMENT", "us-east-1"),
+    pineconeIndexName: optional("PINECONE_INDEX_NAME", "raynatour-openai"),
+    embeddingModel: optional("EMBEDDING_MODEL", "text-embedding-ada-002"), // OpenAI embedding model
+    chunkSize: parseInt(optional("RAG_CHUNK_SIZE", "1000")),
+    chunkOverlap: parseInt(optional("RAG_CHUNK_OVERLAP", "200")),
+    topK: parseInt(optional("RAG_TOP_K", "5")), // Number of similar chunks to retrieve
+    csvFilePath: optional("CSV_FILE_PATH", "data/knowledge.csv"),
   },
 } as const;

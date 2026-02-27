@@ -23,9 +23,9 @@ router.post("/", async (req: Request, res: Response<ChatResponse | ErrorResponse
   const { message, session_id } = parsed.data;
   const sessionId = session_id ?? uuid();
 
-  try {
-    const { reply } = await chatService.chat(sessionId, message);
-    return res.status(200).json({ message: reply, session_id: sessionId });
+    try {
+    const { reply, tourCarousel, metadata } = await chatService.chat(sessionId, message);
+    return res.status(200).json({ message: reply, session_id: sessionId, tourCarousel, metadata });
   } catch (err) {
     console.error("[ChatRouter] Chat error:", err);
     return res.status(500).json({

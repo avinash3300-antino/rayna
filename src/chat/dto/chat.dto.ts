@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TourCarousel } from "./tour-card.dto";
 
 // ── Request Validation Schema ──────────────────────────────
 export const ChatRequestSchema = z.object({
@@ -29,6 +30,12 @@ export type ChatRequest = z.infer<typeof ChatRequestSchema>;
 export interface ChatResponse {
   message: string;
   session_id: string;
+  tourCarousel?: TourCarousel;
+  metadata?: {
+    hasCards: boolean;
+    cardCount?: number;
+    totalResults?: number;
+  };
 }
 
 export interface HistoryMessage {

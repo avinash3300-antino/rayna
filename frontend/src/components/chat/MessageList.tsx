@@ -3,6 +3,8 @@
 import MessageBubble from "./MessageBubble";
 import type { Message } from "@/lib/types";
 import { useScrollToBottom } from "@/hooks/useScrollToBottom";
+import TourCarousel from "./TourCarousel";
+
 
 interface MessageListProps {
   messages: Message[];
@@ -35,13 +37,20 @@ export default function MessageList({
       }}
     >
       <div className="flex flex-col gap-5">
-        {messages.map((msg, i) => (
-          <MessageBubble
-            key={i}
-            message={msg}
-            animate={i === animatingIndex}
-          />
+                {messages.map((msg, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <MessageBubble
+              message={msg}
+              animate={i === animatingIndex}
+            />
+            {msg.role === "assistant" && msg.tourCarousel ? (
+              <div className="ml-11">{/* align with assistant avatar */}
+                <TourCarousel carousel={msg.tourCarousel} />
+              </div>
+            ) : null}
+          </div>
         ))}
+
         {/* Empty div to ensure proper scrolling space */}
         <div style={{ height: '1px', minHeight: '1px' }} />
       </div>

@@ -105,7 +105,7 @@ export default function MessageBubble({ message, animate = false }: MessageBubbl
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} message-enter`}>
       {/* Assistant avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-lg bg-linear-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-xs font-bold mr-3 mt-1 shrink-0 shadow-lg shadow-amber-500/20">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-xs font-bold mr-3 mt-1 shrink-0 shadow-lg shadow-amber-500/20">
           R
         </div>
       )}
@@ -114,8 +114,8 @@ export default function MessageBubble({ message, animate = false }: MessageBubbl
       <div
         className={`max-w-[85%] px-4 py-3 rounded-2xl ${
           isUser
-            ? "bg-linear-to-r from-amber-500 to-orange-500 text-white rounded-br-sm shadow-lg shadow-amber-500/20"
-            : "glass text-(--text-primary) rounded-bl-sm"
+            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-sm shadow-lg shadow-amber-500/20"
+            : "glass text-[var(--text-primary)] rounded-bl-sm"
         }`}
       >
         <p

@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { config } from "./config";
 import chatRouter from "./chat/chat.router";
+import ragRouter from "./rag/rag.router";
 import { chatRateLimiter } from "./common/rate-limiter";
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 // ── Routes ─────────────────────────────────────────────────
 // Rate limit only the chat endpoint (not health checks)
 app.use("/api/chat", chatRateLimiter, chatRouter);
+app.use("/api/rag", ragRouter); // RAG endpoints for data management
 
 // Root health check
 app.get("/", (_req, res) => {
@@ -28,11 +30,15 @@ app.get("/", (_req, res) => {
     version: "1.0.0",
     milestone: 1,
     status: "running",
-    endpoints: {
-      chat:    "POST /api/chat",
-      history: "GET  /api/chat/history/:sessionId",
-      clear:   "DELETE /api/chat/session/:sessionId",
-      health:  "GET  /api/chat/health",
+        endpoints: {
+      chat:       "POST /api/chat",
+      history:    "GET  /api/chat/history/:sessionId",
+      clear:      "DELETE /api/chat/session/:sessionId",
+      health:     "GET  /api/chat/health",
+      ragStatus:  "GET  /api/rag/status",
+      ragTest:    "POST /api/rag/test",
+      ragIngest:  "POST /api/rag/ingest",
+      ragSearch:  "POST /api/rag/search",
     },
   });
 });
@@ -54,10 +60,11 @@ app.listen(config.server.port, () => {
   ╔════════════════════════════════════════╗
   ║   🌍 Rayna Tours Chatbot — Running     ║
   ║                                        ║
-  ║   Port      : ${config.server.port}                    ║
+    ║   Port      : ${config.server.port}                    ║
   ║   Env        : ${config.server.nodeEnv}              ║
   ║   LLM        : ${config.llm.provider}                  ║
-  ║   Milestone  : 1 (Tour Discovery)      ║
+  ║   RAG        : ${config.rag.enabled ? 'Enabled' : 'Disabled'}               ║
+  ║   Milestone  : 1 (Tour Discovery + RAG) ║
   ║                                        ║
   ║   POST http://localhost:${config.server.port}/api/chat  ║
   ╚════════════════════════════════════════╝

@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 import { config } from "../config";
 import type { ToolName } from "./tools";
 import { visaService } from "./visa.service";
+import { getTourCards } from "./tools/get-tour-cards.tool";
 
 // ─────────────────────────────────────────────────────────
 // RaynaApiService
@@ -175,7 +176,7 @@ export class RaynaApiService {
         };
       }
 
-      case "get_popular_visas": {
+            case "get_popular_visas": {
         const result = await visaService.getPopularVisas();
         const limited = result.slice(0, (input.limit as number) || 8);
         return {
@@ -183,6 +184,13 @@ export class RaynaApiService {
           message: `Found ${limited.length} popular visa destinations`,
           data: limited,
         };
+      }
+
+      // ── GET TOUR CARDS FOR CAROUSEL DISPLAY ──
+      case "get_tour_cards": {
+        // This tool returns its own JSON string, so we need to parse and return it
+        const result = await getTourCards(input);
+        return JSON.parse(result);
       }
 
       // ── Milestone 2 (not active yet) ──
