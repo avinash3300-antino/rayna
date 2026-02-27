@@ -33,19 +33,18 @@ export default function ChatPanel() {
     <div className="flex flex-col h-full w-full  ">
 
    
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3.5 border-b border-white/5 ">
-        <div className="flex items-center gap-3">
-          <div className="w-28 rounded-xl  flex items-center justify-center ">
-            
-            <img src="/raynatourslogo.webp" alt="Rayna Tours Logo" />
+            {/* Header */}
+      <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 border-b border-white/5">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-20 sm:w-24 md:w-28 rounded-xl flex items-center justify-center flex-shrink-0">
+            <img src="/raynatourslogo.webp" alt="Rayna Tours Logo" className="w-full h-auto" />
           </div>
-          <div>
-            <h2 className="text-sm font-semibold text-black">
+          <div className="min-w-0">
+            <h2 className="text-xs sm:text-sm font-semibold text-black truncate">
               Rayna AI
             </h2>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 flex-shrink-0" />
               <p className="text-xs text-black">Online</p>
             </div>
           </div>
@@ -67,8 +66,8 @@ export default function ChatPanel() {
               shouldScrollToBottom={shouldScrollToBottom}
               onScrollTriggered={consumeScrollTrigger}
             />
-            {isLoading && (
-              <div className="px-4 md:px-6 py-2">
+                        {isLoading && (
+              <div className="px-3 sm:px-4 md:px-6 py-2">
                 <TypingIndicator />
               </div>
             )}
@@ -76,10 +75,10 @@ export default function ChatPanel() {
         )}
       </div>
 
-      {/* Error bar */}
+            {/* Error bar */}
       {error && (
-        <div className="px-4 md:px-6 py-2.5 bg-red-500/10 border-t border-red-500/20">
-          <p className="text-sm text-red-400">{error}</p>
+        <div className="px-3 sm:px-4 md:px-6 py-2.5 bg-red-500/10 border-t border-red-500/20">
+          <p className="text-xs sm:text-sm text-red-400">{error}</p>
         </div>
       )}
 

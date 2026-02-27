@@ -80,8 +80,8 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   }, [isListening, startListening, stopListening, clearTranscript]);
 
   return (
-    <div className="p-5 md:px-6 border-t border-white/5">
-      <div className="flex items-end gap-3 max-w-3xl mx-auto">
+        <div className="p-3 sm:p-4 md:p-5 md:px-6 border-t border-white/5">
+      <div className="flex items-end gap-2 sm:gap-3 max-w-3xl mx-auto">
                 <div className="flex-1 glass rounded-xl focus-within:border-amber-500/40 focus-within:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all relative">
           <div className="flex items-center">
             <textarea
@@ -92,7 +92,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
               placeholder={isListening ? "Listening... speak now" : "Ask about tours, activities, cruises..."}
               disabled={disabled || isListening}
               rows={1}
-              className="w-full resize-none bg-transparent p-4 pr-12 text-sm text-black placeholder-gray-500 focus:outline-none disabled:opacity-40 border-[1px] border-gray-600 rounded-3xl"
+              className="w-full resize-none bg-transparent p-3 sm:p-4 pr-10 sm:pr-12 text-sm text-black placeholder-gray-500 focus:outline-none disabled:opacity-40 border-[1px] border-gray-600 rounded-3xl"
             />
             {/* Microphone button */}
             {isSpeechSupported && (
@@ -100,7 +100,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
                 type="button"
                 onClick={handleMicClick}
                 disabled={disabled}
-                className={`absolute right-3 p-2 rounded-full transition-all ${
+                className={`absolute right-2 sm:right-3 p-1.5 sm:p-2 rounded-full transition-all ${
                   isListening
                     ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30'
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
@@ -114,7 +114,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
                   viewBox="0 0 24 24"
                   strokeWidth={2}
                   stroke="currentColor"
-                  className="w-4 h-4"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                 >
                   <path
                     strokeLinecap="round"
@@ -134,7 +134,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         <button
           onClick={handleSend}
           disabled={disabled || !input.trim()}
-          className="rounded-xl bg-linear-to-r from-amber-500 to-orange-500 p-3.5 text-white hover:from-amber-400 hover:to-orange-400 disabled:opacity-30 transition-all shrink-0 shadow-lg shadow-amber-500/20 disabled:shadow-none"
+          className="rounded-xl bg-linear-to-r from-amber-500 to-orange-500 p-2.5 sm:p-3 md:p-3.5 text-white hover:from-amber-400 hover:to-orange-400 disabled:opacity-30 transition-all shrink-0 shadow-lg shadow-amber-500/20 disabled:shadow-none"
           aria-label="Send message"
         >
           <svg
@@ -143,7 +143,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
             viewBox="0 0 24 24"
             strokeWidth={2}
             stroke="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4 sm:w-5 sm:h-5"
           >
             <path
               strokeLinecap="round"

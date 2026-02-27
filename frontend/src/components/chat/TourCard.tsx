@@ -13,9 +13,9 @@ export default function TourCard({ card }: Props) {
       href={card.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex-shrink-0 w-72 snap-center rounded-2xl overflow-hidden border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-amber-400"
+      className="group flex-shrink-0 w-64 sm:w-72 snap-center rounded-2xl overflow-hidden border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-amber-400"
     >
-      <div className="relative h-40 w-full bg-gray-100 overflow-hidden">
+              <div className="relative h-36 sm:h-40 w-full bg-gray-100 overflow-hidden">
         {card.image ? (
           <img
             src={card.image}
@@ -39,8 +39,8 @@ export default function TourCard({ card }: Props) {
         ) : null}
       </div>
 
-      <div className="p-3.5 space-y-2">
-        <h3 className="text-sm font-semibold text-black line-clamp-2 min-h-[2.5rem]">
+      <div className="p-3 sm:p-3.5 space-y-1.5 sm:space-y-2">
+        <h3 className="text-xs sm:text-sm font-semibold text-black line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
           {card.title}
         </h3>
         <div className="flex items-center justify-between">
@@ -51,7 +51,7 @@ export default function TourCard({ card }: Props) {
         </div>
 
         <div className="flex items-baseline gap-2">
-          <div className="text-base font-bold text-black">
+          <div className="text-sm sm:text-base font-bold text-black">
             {card.currency} {card.currentPrice}
           </div>
           {card.originalPrice ? (

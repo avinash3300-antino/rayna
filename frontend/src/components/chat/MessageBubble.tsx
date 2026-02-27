@@ -103,23 +103,23 @@ export default function MessageBubble({ message, animate = false }: MessageBubbl
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} message-enter`}>
-      {/* Assistant avatar */}
+            {/* Assistant avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-xs font-bold mr-3 mt-1 shrink-0 shadow-lg shadow-amber-500/20">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-xs font-bold mr-2 sm:mr-3 mt-1 shrink-0 shadow-lg shadow-amber-500/20">
           R
         </div>
       )}
 
       {/* Message bubble */}
       <div
-        className={`max-w-[85%] px-4 py-3 rounded-2xl ${
+        className={`max-w-[85%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl ${
           isUser
             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-sm shadow-lg shadow-amber-500/20"
             : "glass text-[var(--text-primary)] rounded-bl-sm"
         }`}
       >
         <p
-          className={`whitespace-pre-wrap text-sm leading-relaxed wrap-break-word ${
+          className={`whitespace-pre-wrap text-xs sm:text-sm leading-relaxed wrap-break-word ${
             !isUser ? "text-black" : ""
           } ${animate && !isUser && !isDone ? "cursor-blink" : ""}`}
         >

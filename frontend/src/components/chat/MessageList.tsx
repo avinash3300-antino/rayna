@@ -28,23 +28,23 @@ export default function MessageList({
   ]);
 
   return (
-    <div 
+        <div 
       ref={containerRef}
-      className="flex-1 overflow-y-auto p-4 md:p-6"
+      className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6"
       style={{ 
         maxHeight: '100%',
         scrollBehavior: 'smooth'
       }}
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3 sm:gap-4 md:gap-5">
                 {messages.map((msg, i) => (
           <div key={i} className="flex flex-col gap-2">
             <MessageBubble
               message={msg}
               animate={i === animatingIndex}
             />
-            {msg.role === "assistant" && msg.tourCarousel ? (
-              <div className="ml-11">{/* align with assistant avatar */}
+                        {msg.role === "assistant" && msg.tourCarousel ? (
+              <div className="ml-8 sm:ml-10 md:ml-11">{/* align with assistant avatar */}
                 <TourCarousel carousel={msg.tourCarousel} />
               </div>
             ) : null}
