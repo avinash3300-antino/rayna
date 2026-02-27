@@ -17,15 +17,26 @@ export default function TourCarousel({ carousel }: Props) {
     el.scrollBy({ left: delta, behavior: "smooth" });
   };
 
-  if (!carousel?.cards || carousel.cards.length === 0) return null;
+  if (!carousel?.cards || carousel.cards.length === 0) {
+    return (
+      <div className="mt-2 sm:mt-3 p-4 text-center text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)]">
+        <div className="text-2xl mb-2">🎠</div>
+        <p className="text-sm">No tours available at the moment.</p>
+        <p className="text-xs mt-1">Please try a different search or visit our website.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-2 sm:mt-3">
       <div className="flex items-baseline justify-between mb-2 px-1">
         <div className="min-w-0 flex-1 mr-2">
-          <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate">{carousel.title}</div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg">🎠</span>
+            <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate">{carousel.title}</div>
+          </div>
           {carousel.subtitle ? (
-            <div className="text-xs text-[var(--text-secondary)] truncate">{carousel.subtitle}</div>
+            <div className="text-xs text-[var(--text-secondary)] truncate ml-7">{carousel.subtitle}</div>
           ) : null}
         </div>
         <div className="flex gap-1 sm:gap-1.5 flex-shrink-0">

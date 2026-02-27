@@ -63,7 +63,7 @@ export class TourCardService {
   /**
    * Extract price from string (e.g., "AED 25.99" -> 25.99)
    */
-  private static extractPrice(priceString: string): number {
+  static extractPrice(priceString: string): number {
     if (!priceString) return 0;
     
     // Remove currency symbols and extract number
@@ -90,8 +90,23 @@ export class TourCardService {
   /**
    * Extract location from tour name if not provided separately
    */
-  private static extractLocationFromName(name: string): string {
-    const locations = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ras Al Khaimah', 'Singapore', 'Bangkok', 'Phuket', 'Kuala Lumpur'];
+  static extractLocationFromName(name: string): string {
+    const locations = [
+      // UAE
+      'Dubai', 'Abu Dhabi', 'Sharjah', 'Ras Al Khaimah',
+      // Saudi Arabia
+      'Jeddah', 'Riyadh', 'Makkah', 'Dammam',
+      // Oman
+      'Muscat', 'Khasab',
+      // Thailand
+      'Bangkok', 'Phuket', 'Krabi', 'Koh Samui', 'Pattaya',
+      // Indonesia
+      'Bali',
+      // Malaysia
+      'Kuala Lumpur', 'Langkawi', 'Penang',
+      // Singapore
+      'Singapore'
+    ];
     
     for (const location of locations) {
       if (name.toLowerCase().includes(location.toLowerCase())) {
@@ -99,22 +114,28 @@ export class TourCardService {
       }
     }
     
-    return 'UAE'; // Default fallback
+    return 'Middle East'; // Default fallback
   }
 
   /**
    * Categorize activity based on name/description
    */
-  private static categorizeActivity(name: string): string {
+  static categorizeActivity(name: string): string {
     const categories = {
       'Desert Safari': ['desert', 'safari', 'dune', 'camel'],
       'City Tour': ['city tour', 'sightseeing'],
-      'Theme Park': ['theme park', 'ferrari world', 'legoland', 'motiongate', 'IMG'],
+      'Theme Park': ['theme park', 'ferrari world', 'legoland', 'motiongate', 'IMG', 'universal', 'fantasea'],
       'Water Park': ['aquaventure', 'waterworld', 'water park', 'splash'],
-      'Adventure': ['zipline', 'skydiving', 'bungee', 'quad bike', 'buggy'],
-      'Cruise': ['cruise', 'dhow', 'dinner cruise'],
-      'Attraction': ['burj khalifa', 'museum', 'aquarium', 'frame'],
-      'Cultural': ['mosque', 'heritage', 'cultural', 'traditional']
+      'Adventure': ['zipline', 'skydiving', 'bungee', 'quad bike', 'buggy', 'mountain', 'trek', 'safari'],
+      'Cruise': ['cruise', 'dhow', 'dinner cruise', 'boat', 'sailing'],
+      'Attraction': ['burj khalifa', 'museum', 'aquarium', 'frame', 'tower', 'flyer', 'cable car'],
+      'Cultural': ['mosque', 'heritage', 'cultural', 'traditional', 'temple', 'palace', 'fort'],
+      'Religious': ['umrah', 'religious', 'spiritual', 'holy', 'mosque', 'temple'],
+      'Island': ['island', 'beach', 'marine park', 'coral', 'snorkeling'],
+      'Entertainment': ['show', 'cabaret', 'nightlife', 'entertainment'],
+      'Nature': ['gardens', 'nature', 'wildlife', 'elephant', 'safari'],
+      'Shopping': ['shopping', 'mall', 'souq', 'market'],
+      'Food': ['food', 'culinary', 'street food', 'dining']
     };
 
     const lowerName = name.toLowerCase();
@@ -168,14 +189,35 @@ export class TourCardService {
   private static extractHighlights(text: string): string[] | undefined {
     if (!text) return undefined;
 
-    // Common highlights to look for
+    // Common highlights to look for across all destinations
     const highlights = [
+      // UAE Highlights
       'Burj Khalifa', 'Dubai Mall', 'Palm Jumeirah', 'Dubai Marina',
       'Desert Safari', 'Camel Riding', 'Dune Bashing', 'BBQ Dinner',
       'Ferrari World', 'Yas Island', 'Sheikh Zayed Mosque',
       'Aquaventure', 'Atlantis', 'Dubai Fountain', 'Global Village',
-      'Hot Air Balloon', 'Skydiving', 'Zip Line',
-      'Dhow Cruise', 'Marina Walk', 'JBR Beach'
+      'Hot Air Balloon', 'Skydiving', 'Zip Line', 'Dhow Cruise',
+      'Emirates Palace', 'Louvre Abu Dhabi', 'Jais Zipline',
+      // Saudi Arabia Highlights
+      'Historical District', 'Corniche', 'Masmak Fortress', 'Kingdom Centre',
+      'Holy Kaaba', 'Mount Arafat', 'Half Moon Bay', 'Heritage Village',
+      // Oman Highlights
+      'Grand Mosque', 'Twin Forts', 'Mutrah Souq', 'Dhow Cruise',
+      'Mountain Safari', 'Dolphins', 'Norway of Arabia',
+      // Thailand Highlights
+      'Floating Markets', 'Grand Palace', 'Elephant Sanctuary',
+      'Phi Phi Island', 'Sunset Cruise', 'Fantasea Show',
+      'Four Islands', 'Emerald Pool', 'Hot Springs', 'Ang Thong',
+      'Cabaret Show', 'Coral Island',
+      // Indonesia Highlights
+      'Mount Batur', 'Sunrise Trek', 'Rice Terraces', 'Water Temple',
+      'Art Workshop', 'Ubud',
+      // Malaysia Highlights
+      'Petronas Towers', 'Batu Caves', 'Street Food', 'Cable Car',
+      'Island Hopping', 'George Town', 'Heritage Walk', 'Penang Hill',
+      // Singapore Highlights
+      'Singapore Flyer', 'Gardens by the Bay', 'Universal Studios',
+      'Night Safari', 'Orchard Road'
     ];
 
     const foundHighlights = highlights.filter(highlight => 
@@ -266,5 +308,40 @@ export class TourCardService {
       `🎯 ${category} Activities`, 
       `Best ${category.toLowerCase()} experiences`
     );
+  }
+
+  /**
+   * Get emoji for category
+   */
+  static getEmojiForCategory(category: string): string {
+    const emojiMap: { [key: string]: string } = {
+      'desert safari': '🏜️',
+      'adventure': '🚁',
+      'culture': '🏛️',
+      'religious': '🕌',
+      'theme park': '🎢',
+      'water park': '🌊',
+      'cruise': '🚢',
+      'island': '🏝️',
+      'entertainment': '🎭',
+      'nature': '🌺',
+      'shopping': '🛍️',
+      'food': '🍜',
+      'attraction': '🗼',
+      'wildlife': '🐘',
+      'beach': '🏖️',
+      'mountain': '⛰️',
+      'temple': '⛩️',
+      'modern': '🏙️'
+    };
+
+    const lowerCategory = category.toLowerCase();
+    for (const [key, emoji] of Object.entries(emojiMap)) {
+      if (lowerCategory.includes(key)) {
+        return emoji;
+      }
+    }
+    
+    return '🎯'; // Default emoji
   }
 }

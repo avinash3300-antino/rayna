@@ -89,7 +89,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
               value={input}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              placeholder={isListening ? "Listening... speak now" : "Ask about tours, activities, cruises..."}
+              placeholder={isListening ? "Listening... speak now" : "Ask about Dubai tours, Singapore activities, travel plans..."}
               disabled={disabled || isListening}
               rows={1}
               className="w-full resize-none bg-transparent p-3 sm:p-4 pr-10 sm:pr-12 text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none disabled:opacity-40 border-[1px] border-[var(--border-color)] focus:border-amber-500/40 rounded-3xl transition-colors"

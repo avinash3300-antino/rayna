@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { RaynaApiService } from "../rayna-api.service";
 import { TourCardService } from "../services/tour-card.service";
+import { 
+  TOUR_DATABASE, 
+  getToursByLocation, 
+  getToursByCountry, 
+  getToursByCategory, 
+  getPopularTours, 
+  searchTours 
+} from "../data/tour-database";
 
 export const getTourCardsSchema = {
   name: "get_tour_cards",
@@ -10,11 +18,11 @@ export const getTourCardsSchema = {
     properties: {
       city: {
         type: "string",
-        description: "Filter by city (Dubai, Abu Dhabi, Singapore, Bangkok, etc.)",
+        description: "Filter by city (Dubai, Abu Dhabi, Ras Al Khaimah, Jeddah, Riyadh, Makkah, Dammam, Muscat, Khasab, Bangkok, Phuket, Krabi, Koh Samui, Pattaya, Bali, Kuala Lumpur, Langkawi, Penang, Singapore)",
       },
       category: {
         type: "string", 
-        description: "Filter by category (desert safari, city tour, theme park, water park, adventure, cruise, cultural)",
+        description: "Filter by category (desert safari, city tour, theme park, water park, adventure, cruise, cultural, religious, island, entertainment, nature, shopping, food)",
       },
       carouselType: {
         type: "string",
@@ -49,6 +57,8 @@ export async function getTourCards(input: unknown) {
 
     // Get tours based on filters
     let tours: any[] = [];
+    let useStaticData = false;
+    let hasOnlyTransfers = false;
 
     if (city && city.toLowerCase() !== 'all') {
       // First get available cities to find the cityId
@@ -97,12 +107,59 @@ export async function getTourCards(input: unknown) {
       }
     }
 
-    if (!Array.isArray(tours)) {
-      tours = [];
+    // Check if API returned only transfers/low-value services
+    hasOnlyTransfers = Array.isArray(tours) && tours.length > 0 && 
+      tours.every(tour => {
+        const name = (tour.name || tour.title || '').toLowerCase();
+        const category = (tour.category || '').toLowerCase();
+        return name.includes('transfer') || name.includes('pickup') || name.includes('drop') ||
+               category.includes('transfer') || category.includes('pickup') || category.includes('drop');
+      });
+
+    // Log transfer detection
+    if (hasOnlyTransfers) {
+      console.log(`[getTourCards] Detected only transfers for ${city}, switching to static data`);
     }
 
-    // Apply category filter if specified
-    if (category && category.toLowerCase() !== 'all') {
+    // Fallback to static database if API fails, returns no results, or only has transfers
+    if (!Array.isArray(tours) || tours.length === 0 || hasOnlyTransfers) {
+      console.log('[getTourCards] Using static tour database as fallback');
+      useStaticData = true;
+      
+      if (city && city.toLowerCase() !== 'all') {
+        tours = getToursByLocation(city);
+      } else if (category && category.toLowerCase() !== 'all') {
+        tours = getToursByCategory(category);
+      } else {
+        tours = getPopularTours(limit);
+      }
+      
+      // Convert static data to API format
+      tours = tours.map(tour => ({
+        id: tour.id,
+        name: tour.title,
+        title: tour.title,
+        category: tour.category,
+        city: tour.location,
+        location: tour.location,
+        price: tour.price,
+        salePrice: tour.price,
+        amount: tour.price,
+        currency: tour.currency,
+        duration: tour.duration,
+        description: tour.description,
+        highlights: tour.highlights,
+        url: tour.url,
+        slug: tour.id,
+        rating: tour.rating,
+        averageRating: tour.rating,
+        is_featured: tour.isPopular,
+        is_new: tour.isNew
+      }));
+    }
+
+    // Apply category filter if specified and using API data
+    if (!useStaticData && category && category.toLowerCase() !== 'all') {
       const cat = category.toLowerCase();
       tours = tours.filter((tour: any) => {
         const tourCategory = TourCardService['categorizeActivity'](tour.name || tour.title || '');
@@ -119,7 +176,7 @@ export async function getTourCards(input: unknown) {
     if (tours.length === 0) {
       return JSON.stringify({
         success: false,
-        message: `No tours found${city ? ` in ${city}` : ''}${category ? ` for ${category}` : ''}`,
+        message: `No tours found${city ? ` in ${city}` : ''}${category ? ` for ${category}` : ''}. Try browsing our popular destinations like Dubai, Bangkok, or Singapore!`,
         data: null
       });
     }
@@ -151,29 +208,36 @@ export async function getTourCards(input: unknown) {
       }
     }
 
-    // Add helpful response text
-    let responseText = `Here are some amazing ${category || 'tour'} options${city ? ` in ${city}` : ''}:\n\n`;
+    // Create card format response text
+    let responseText = `Here are amazing ${category || 'tour'} options${city ? ` in ${city}` : ''}:\n\n`;
     
     if (carousel.cards.length > 0) {
-      responseText += `✨ **${carousel.title}**\n`;
-      if (carousel.subtitle) {
-        responseText += `${carousel.subtitle}\n\n`;
-      }
-
-      // Add summary of what's available
+      // Add cards in the requested format
+      carousel.cards.forEach((card, index) => {
+        const emoji = useStaticData ? 
+          TOUR_DATABASE.find(t => t.id === card.id)?.emoji || '🎯' : 
+          TourCardService['getEmojiForCategory'](card.category);
+        
+        responseText += `${index + 1}. ${emoji} ${card.title} | ${card.category} 💰 ${card.currency} ${card.currentPrice} | ⏱ ${card.duration} 🔗 ${card.url}\n`;
+      });
+      
+      responseText += `\n📊 **Quick Summary:**\n`;
       const priceRange = carousel.cards.length > 1 ? 
-        `AED ${Math.min(...carousel.cards.map(c => c.currentPrice))} - AED ${Math.max(...carousel.cards.map(c => c.currentPrice))}` :
-        `AED ${carousel.cards[0].currentPrice}`;
+        `${carousel.cards[0].currency} ${Math.min(...carousel.cards.map(c => c.currentPrice))} - ${carousel.cards[0].currency} ${Math.max(...carousel.cards.map(c => c.currentPrice))}` :
+        `${carousel.cards[0].currency} ${carousel.cards[0].currentPrice}`;
 
       responseText += `💰 Price range: ${priceRange}\n`;
       responseText += `📍 Locations: ${[...new Set(carousel.cards.map(c => c.location))].join(', ')}\n`;
+      responseText += `🎫 Total options: ${carousel.cards.length}\n`;
+      
+      if (useStaticData) {
+        responseText += `\n🌟 These are curated experiences from our premium collection!\n`;
+      }
       
       const discountCount = carousel.cards.filter(c => c.discount).length;
       if (discountCount > 0) {
-        responseText += `🎯 ${discountCount} tours with special discounts!\n`;
+        responseText += `🎯 Special offers: ${discountCount} tours with discounts\n`;
       }
-
-      responseText += `\n🎠 Swipe through the carousel below to explore these amazing experiences!`;
     }
 
     return JSON.stringify({
@@ -186,16 +250,63 @@ export async function getTourCards(input: unknown) {
           city: city || 'all',
           category: category || 'all',
           carouselType
-        }
+        },
+        dataSource: useStaticData ? 'static' : 'api',
+        note: useStaticData ? 'Showing curated experiences' : 'Live data from API',
+        fallbackReason: useStaticData ? (hasOnlyTransfers ? 'transfers_only' : 'no_api_data') : null
       }
     });
 
   } catch (error) {
     console.error('[getTourCards] Error:', error);
-    return JSON.stringify({
-      success: false,
-      message: "I'm having trouble loading the tours right now. Please try again or visit raynatours.com to browse our latest offers.",
-      error: error instanceof Error ? error.message : "Unknown error"
-    });
+    
+    // Emergency fallback - show popular tours
+    try {
+      const fallbackTours = getPopularTours(6);
+      const fallbackCarousel = TourCardService.formatTourCards(
+        fallbackTours.map(tour => ({
+          id: tour.id,
+          name: tour.title,
+          title: tour.title,
+          category: tour.category,
+          city: tour.location,
+          location: tour.location,
+          price: tour.price,
+          salePrice: tour.price,
+          amount: tour.price,
+          currency: tour.currency,
+          duration: tour.duration,
+          url: tour.url,
+          rating: tour.rating,
+          is_featured: tour.isPopular
+        })),
+        "🌟 Popular Tours",
+        "Here are some of our most popular experiences"
+      );
+      
+      let fallbackText = "I had trouble finding specific tours, but here are some popular options:\n\n";
+      
+      fallbackCarousel.cards.forEach((card, index) => {
+        const tour = fallbackTours[index];
+        fallbackText += `${index + 1}. ${tour.emoji} ${card.title} | ${card.category} 💰 ${card.currency} ${card.currentPrice} | ⏱ ${card.duration} 🔗 ${card.url}\n`;
+      });
+      
+      return JSON.stringify({
+        success: true,
+        message: fallbackText,
+        data: {
+          carousel: fallbackCarousel,
+          totalResults: fallbackTours.length,
+          filters: { city: 'all', category: 'all', carouselType: 'featured' },
+          fallback: true
+        }
+      });
+    } catch (fallbackError) {
+      return JSON.stringify({
+        success: false,
+        message: "I'm having trouble loading tours right now. Please visit raynatours.com or try asking about specific destinations like Dubai, Bangkok, or Singapore!",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   }
 }

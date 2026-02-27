@@ -1,11 +1,11 @@
 "use client";
 
 const PROMPTS = [
-  { text: "Show me popular tours in Dubai", icon: "🏙️" },
-  { text: "Holiday packages in Singapore", icon: "🌴" },
-  { text: "Find cruises in Abu Dhabi", icon: "🚢" },
-  { text: "Yacht experiences available", icon: "⛵" },
-  { text: "Best activities in Bangkok", icon: "🎭" },
+  { text: "Show me Dubai tours", icon: "🏙️" },
+  { text: "Desert safari tours in Dubai", icon: "🐪" },
+  { text: "Water activities in Dubai", icon: "🏄" },
+  { text: "Dubai city tour packages", icon: "🚌" },
+  { text: "Burj Khalifa tickets", icon: "🏒" },
   { text: "What destinations do you cover?", icon: "🌍" },
 ];
 
@@ -24,8 +24,8 @@ export default function QuickPrompts({ onSelect }: QuickPromptsProps) {
       {/* <h3 className="text-xl font-semibold text-black mb-1">
         Hi! I&apos;m Rayna
       </h3> */}
-                  <p className="text-sm text-[var(--text-primary)] mb-6 sm:mb-8 text-center max-w-sm px-4">
-        Your AI travel assistant. Ask me about tours, activities, and holiday packages!
+                        <p className="text-sm text-[var(--text-primary)] mb-6 sm:mb-8 text-center max-w-sm px-4">
+        Your AI travel assistant specializing in Dubai & UAE tours! Ask me about tours and activities.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg px-4">
