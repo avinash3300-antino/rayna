@@ -24,7 +24,7 @@ export default function QuickPrompts({ onSelect }: QuickPromptsProps) {
       {/* <h3 className="text-xl font-semibold text-black mb-1">
         Hi! I&apos;m Rayna
       </h3> */}
-            <p className="text-sm text-black mb-6 sm:mb-8 text-center max-w-sm px-4">
+                  <p className="text-sm text-[var(--text-primary)] mb-6 sm:mb-8 text-center max-w-sm px-4">
         Your AI travel assistant. Ask me about tours, activities, and holiday packages!
       </p>
 
@@ -33,7 +33,7 @@ export default function QuickPrompts({ onSelect }: QuickPromptsProps) {
           <button
             key={prompt.text}
             onClick={() => onSelect(prompt.text)}
-            className="flex items-center gap-2 sm:gap-3 text-left text-xs sm:text-sm px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl glass glass-hover border-2 transition-all text-black hover:text-amber-300 group"
+            className="flex items-center gap-2 sm:gap-3 text-left text-xs sm:text-sm px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl glass glass-hover transition-all text-[var(--text-primary)] hover:text-amber-500 group"
           >
                         <span className="text-base sm:text-lg group-hover:scale-110 transition-transform flex-shrink-0">
               {prompt.icon}

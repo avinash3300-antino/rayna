@@ -7,6 +7,7 @@ import ChatInput from "@/components/chat/ChatInput";
 import TypingIndicator from "@/components/chat/TypingIndicator";
 import NewChatButton from "@/components/chat/NewChatButton";
 import QuickPrompts from "@/components/ui/QuickPrompts";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function ChatPanel() {
   const { 
@@ -33,23 +34,26 @@ export default function ChatPanel() {
     <div className="flex flex-col h-full w-full  ">
 
    
-            {/* Header */}
-      <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 border-b border-white/5">
+                  {/* Header */}
+      <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 border-b border-[var(--border-color)]">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-20 sm:w-24 md:w-28 rounded-xl flex items-center justify-center flex-shrink-0">
             <img src="/raynatourslogo.webp" alt="Rayna Tours Logo" className="w-full h-auto" />
           </div>
           <div className="min-w-0">
-            <h2 className="text-xs sm:text-sm font-semibold text-black truncate">
+            <h2 className="text-xs sm:text-sm font-semibold text-[var(--text-primary)] truncate">
               Rayna AI
             </h2>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 flex-shrink-0" />
-              <p className="text-xs text-black">Online</p>
+              <p className="text-xs text-[var(--text-secondary)]">Online</p>
             </div>
           </div>
         </div>
-        <NewChatButton onClear={clearChat} disabled={isLoading} />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <NewChatButton onClear={clearChat} disabled={isLoading} />
+        </div>
       </div>
 
                   {/* Messages area */}

@@ -13,7 +13,7 @@ export default function TourCard({ card }: Props) {
       href={card.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex-shrink-0 w-64 sm:w-72 snap-center rounded-2xl overflow-hidden border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-amber-400"
+      className="group flex-shrink-0 w-64 sm:w-72 snap-center rounded-2xl overflow-hidden border border-[var(--border-color)] bg-[var(--bg-primary)] shadow-sm hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-amber-400"
     >
               <div className="relative h-36 sm:h-40 w-full bg-gray-100 overflow-hidden">
         {card.image ? (
@@ -40,22 +40,22 @@ export default function TourCard({ card }: Props) {
       </div>
 
       <div className="p-3 sm:p-3.5 space-y-1.5 sm:space-y-2">
-        <h3 className="text-xs sm:text-sm font-semibold text-black line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
+        <h3 className="text-xs sm:text-sm font-semibold text-[var(--text-primary)] line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
           {card.title}
         </h3>
         <div className="flex items-center justify-between">
-          <div className="text-xs text-gray-500 truncate max-w-[65%]">{card.location}</div>
+          <div className="text-xs text-[var(--text-secondary)] truncate max-w-[65%]">{card.location}</div>
           {typeof card.rating === "number" ? (
             <div className="text-xs font-medium text-amber-600">★ {card.rating.toFixed(1)}</div>
           ) : null}
         </div>
 
         <div className="flex items-baseline gap-2">
-          <div className="text-sm sm:text-base font-bold text-black">
+          <div className="text-sm sm:text-base font-bold text-[var(--text-primary)]">
             {card.currency} {card.currentPrice}
           </div>
           {card.originalPrice ? (
-            <div className="text-xs text-gray-400 line-through">
+            <div className="text-xs text-[var(--text-secondary)] line-through opacity-60">
               {card.currency} {card.originalPrice}
             </div>
           ) : null}
@@ -66,7 +66,7 @@ export default function TourCard({ card }: Props) {
             {card.highlights.slice(0, 3).map((h) => (
               <span
                 key={h}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100"
+                className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-100 dark:border-amber-800"
               >
                 {h}
               </span>

@@ -23,7 +23,7 @@ function formatInline(text: string, keyPrefix: string) {
     if (match[2]) {
       // **bold**
       result.push(
-        <strong key={`${keyPrefix}-b${match.index}`} className="font-semibold text-black">
+                <strong key={`${keyPrefix}-b${match.index}`} className="font-semibold text-[var(--text-primary)]">
           {match[2]}
         </strong>
       );
@@ -119,8 +119,8 @@ export default function MessageBubble({ message, animate = false }: MessageBubbl
         }`}
       >
         <p
-          className={`whitespace-pre-wrap text-xs sm:text-sm leading-relaxed wrap-break-word ${
-            !isUser ? "text-black" : ""
+                    className={`whitespace-pre-wrap text-xs sm:text-sm leading-relaxed wrap-break-word ${
+            !isUser ? "text-[var(--text-primary)]" : ""
           } ${animate && !isUser && !isDone ? "cursor-blink" : ""}`}
         >
           {renderContent(content)}

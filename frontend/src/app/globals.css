@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 :root {
+  /* Light mode variables (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: rgba(0, 0, 0, 0.04);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --accent: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.15);
+}
+
+.dark {
+  /* Dark mode variables */
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
   --bg-card: rgba(255, 255, 255, 0.04);
@@ -14,6 +27,7 @@
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
+  transition: background-color 300ms ease, color 300ms ease;
 }
 
 /* Custom scrollbar */
@@ -79,14 +93,19 @@ body {
 
 /* Glass morphism */
 .glass {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  transition: background-color 300ms ease, border-color 300ms ease;
 }
 
 .glass-hover:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(245, 158, 11, 0.08);
   border-color: rgba(245, 158, 11, 0.3);
+}
+
+.dark .glass-hover:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Glow effect */
@@ -116,6 +135,23 @@ body {
 
 .chat-container::-webkit-scrollbar-thumb:hover {
   background: rgba(245, 158, 11, 0.5);
+}
+
+/* Theme-aware scrollbars */
+:root .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:root .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Ensure text doesn't break awkwardly */

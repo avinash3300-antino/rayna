@@ -23,16 +23,16 @@ export default function TourCarousel({ carousel }: Props) {
     <div className="mt-2 sm:mt-3">
       <div className="flex items-baseline justify-between mb-2 px-1">
         <div className="min-w-0 flex-1 mr-2">
-          <div className="text-xs sm:text-sm font-bold text-black truncate">{carousel.title}</div>
+          <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate">{carousel.title}</div>
           {carousel.subtitle ? (
-            <div className="text-xs text-gray-500 truncate">{carousel.subtitle}</div>
+            <div className="text-xs text-[var(--text-secondary)] truncate">{carousel.subtitle}</div>
           ) : null}
         </div>
         <div className="flex gap-1 sm:gap-1.5 flex-shrink-0">
           <button
             type="button"
             onClick={() => scrollBy(-280)}
-            className="h-7 w-7 sm:h-8 sm:w-8 rounded-md border border-black/10 bg-white text-black text-sm hover:bg-gray-50 flex items-center justify-center"
+            className="h-7 w-7 sm:h-8 sm:w-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] text-sm hover:bg-[var(--bg-card)] flex items-center justify-center transition-colors"
             aria-label="Scroll left"
           >
             ‹
@@ -40,7 +40,7 @@ export default function TourCarousel({ carousel }: Props) {
           <button
             type="button"
             onClick={() => scrollBy(280)}
-            className="h-7 w-7 sm:h-8 sm:w-8 rounded-md border border-black/10 bg-white text-black text-sm hover:bg-gray-50 flex items-center justify-center"
+            className="h-7 w-7 sm:h-8 sm:w-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] text-sm hover:bg-[var(--bg-card)] flex items-center justify-center transition-colors"
             aria-label="Scroll right"
           >
             ›
@@ -50,7 +50,7 @@ export default function TourCarousel({ carousel }: Props) {
 
       <div
         ref={scrollRef}
-        className="flex gap-2 sm:gap-3 overflow-x-auto snap-x snap-mandatory px-1 py-1 scrollbar-thin scrollbar-thumb-gray-300 -mx-1"
+        className="flex gap-2 sm:gap-3 overflow-x-auto snap-x snap-mandatory px-1 py-1 scrollbar-thin -mx-1"
       >
         {carousel.cards.map((card) => (
           <TourCard key={card.id} card={card} />

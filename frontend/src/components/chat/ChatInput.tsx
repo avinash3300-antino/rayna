@@ -80,7 +80,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   }, [isListening, startListening, stopListening, clearTranscript]);
 
   return (
-        <div className="p-3 sm:p-4 md:p-5 md:px-6 border-t border-white/5">
+        <div className="p-3 sm:p-4 md:p-5 md:px-6 border-t border-[var(--border-color)]">
       <div className="flex items-end gap-2 sm:gap-3 max-w-3xl mx-auto">
                 <div className="flex-1 glass rounded-xl focus-within:border-amber-500/40 focus-within:shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-all relative">
           <div className="flex items-center">
@@ -92,7 +92,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
               placeholder={isListening ? "Listening... speak now" : "Ask about tours, activities, cruises..."}
               disabled={disabled || isListening}
               rows={1}
-              className="w-full resize-none bg-transparent p-3 sm:p-4 pr-10 sm:pr-12 text-sm text-black placeholder-gray-500 focus:outline-none disabled:opacity-40 border-[1px] border-gray-600 rounded-3xl"
+              className="w-full resize-none bg-transparent p-3 sm:p-4 pr-10 sm:pr-12 text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none disabled:opacity-40 border-[1px] border-[var(--border-color)] focus:border-amber-500/40 rounded-3xl transition-colors"
             />
             {/* Microphone button */}
             {isSpeechSupported && (
@@ -101,9 +101,9 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
                 onClick={handleMicClick}
                 disabled={disabled}
                 className={`absolute right-2 sm:right-3 p-1.5 sm:p-2 rounded-full transition-all ${
-                  isListening
+                                    isListening
                     ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                    : 'bg-[var(--bg-card)] hover:bg-[var(--border-color)] text-[var(--text-secondary)] border border-[var(--border-color)]'
                 } disabled:opacity-40`}
                 aria-label={isListening ? "Stop listening" : "Start voice input"}
                 title={isListening ? "Stop listening" : "Click to speak"}
@@ -165,8 +165,8 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
             🎤 Listening... Click the microphone again to stop
           </p>
         )}
-        {input.length > 900 && (
-          <p className="text-xs text-black text-right">
+                {input.length > 900 && (
+          <p className="text-xs text-[var(--text-secondary)] text-right">
             {input.length}/{MAX_MESSAGE_LENGTH}
           </p>
         )}

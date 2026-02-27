@@ -10,7 +10,7 @@ export default function NewChatButton({ onClear, disabled }: NewChatButtonProps)
     <button
       onClick={() => !disabled && onClear()}
       disabled={disabled}
-      className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-black hover:text-amber-400 disabled:opacity-30 transition-all px-2 sm:px-3 py-1.5 rounded-lg glass glass-hover"
+      className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-[var(--text-primary)] hover:text-amber-500 disabled:opacity-30 transition-all px-2 sm:px-3 py-1.5 rounded-lg glass glass-hover"
       title="New chat"
     >
       <svg
